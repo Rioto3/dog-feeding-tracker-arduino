@@ -1,7 +1,7 @@
 name: initialize-request
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   initialize:
@@ -17,11 +17,11 @@ jobs:
         run: |
           cat > dog-feeding-tracker.ino << 'EOF'
           #include <Wire.h>
-          #include <LiuidCrystal.h>
+          #include <LiquidCrystal.h>
           #include "RTClib.h"
 
-          LiuidCrystal lcd(12, 11, 5, 4, 3, 2);
-          RTC_DS3231 src;
+          LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+          RTC_DS3231 rtc;
 
           #define BUTTON_PIN 8
 
@@ -32,10 +32,7 @@ jobs:
             pinMode(BUTTON_PIN, INPUT_PULLUP);
             lcd.begin(16, 2);
             Wire.begin();
-            src.begin();
-
-            // 刚囜のみ同工とに導兤するにできるんのんからないにです　
-            // src.adjust(DateTime(F(__DATE__), F(__TIME__)));
+            rtc.begin();
 
             lcd.print("Dog Feed Ready");
             delay(1500);
@@ -45,7 +42,7 @@ jobs:
           void loop() {
             if (digitalRead(BUTTON_PIN) == LOW) {
               delay(200);
-              lastFeed = src.now();
+              lastFeed = rtc.now();
               hasRecord = true;
               lcd.clear();
             }
@@ -73,7 +70,7 @@ jobs:
           }
         EOF
 
-      - name: Create README 
+      - name: Create README
         run: |
           cat > README.md << 'EOF'
           # Dog Feeding Tracker (MVP)
@@ -84,11 +81,6 @@ jobs:
           - Button press records current time
           - Last feed time displayed on LCD
           
-          ## Hardware
-          - Arduino Uno
-          - LCD1602
-          - DS3231 RTC
-          - Button
           EOF
 
       - name: Commit and Push
