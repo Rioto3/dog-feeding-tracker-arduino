@@ -1,0 +1,21 @@
+name: initialize-request
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_type:
+        description: "Type of request"
+        required: true
+        default: "init"
+      request_details:
+        description: "Details about the request"
+        required: false
+
+jobs:
+  initialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo request
+        run: |
+          echo "Request Type: ${{ github.event.inputs.request_type }}"
+          echo "Request Details: ${{ github.event.inputs.request_details }}"
